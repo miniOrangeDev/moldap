@@ -1,0 +1,53 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("miniorangedev\\moldap\\assetbundles\\moldap\\MoldapAsset") %}
+{% do view.registerAssetBundle("miniorangedev\\moldap\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{% set title = "miniOrange LDAP/Active Directory Integration"|t('moldap') %}
+
+{% set selectedSubnavItem = 'signSettings' %}
+
+{% set moldapconfig = craft.moldap.getLDAPData %}
+
+{% set successMessage = craft.app.session.getFlash('success', null, true) %}
+
+{% set errorMessage = craft.app.session.getFlash('error', null, true) %}
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@miniorangedev/moldap/assetbundles/indexcpsection/dist', true) ~ '/img/mo-icon.svg' %}
+
+{% set content %}
+
+    {% if successMessage %}
+        <div class="success-message" id="popUpModal">
+            {{ successMessage }}
+        </div>
+    {% endif %}
+
+    {% if errorMessage %}
+        <div class="error-message" id="popUpModal">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    <div class="head-div">
+        <h2>{{ "Sign-in Settings"|t('moldap') }}</h2>
+
+        <form method="post" action="" accept-charset="UTF-8">
+            {{ csrfInput() }}
+            {{ actionInput('moldap/signinsettings/enable-ldap-login') }}
+            {{ redirectInput('moldap') }}
+
+            {{ forms.checkbox({
+                label: 'Enable LDAP Login',
+                id: 'enableLdapLogin',
+                name: 'enableLdapLogin',
+                checked: moldapconfig['enableLdapLogin']})
+            }}
+
+            <div style="padding: 1rem; font-size: small;"><em>Enabling LDAP login will protect your login page by your configured LDAP. <strong>Please check this only after you have successfully tested your configuration.</strong></em></div>
+            <br>
+            <button class="button" type="submit">Save Configuration</button>
+        </form>
+    </div>
+{% endset %}

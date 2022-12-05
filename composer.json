@@ -1,0 +1,52 @@
+{
+    "name": "miniorangedev/moldap",
+    "description": "LDAP/Active Directory Integration for Craft CMS",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "authentication",
+        "LDAP",
+        "active directory",
+        "active directory integration",
+        "craft-plugin",
+        "authentication",
+        "LDAP Plugin"
+    ],
+    "support": {
+        "docs": "https://github.com/miniOrangeDev/moldap/blob/master/README.md",
+        "issues": "https://github.com/miniOrangeDev/moldap/issue"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "miniorange",
+            "homepage": "https://github.com/miniorangedev"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0",
+        "ext-ldap": "*"
+    },
+    "require-dev": {
+      "craftcms/cms": "^3.2.0",
+      "codeception/codeception": "^3.0",
+      "vlucas/phpdotenv": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "miniorangedev\\moldap\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "miniOrange LDAP/Active Directory Integration",
+        "handle": "moldap",
+        "developer": "miniorange",
+        "developerUrl": "https://github.com/miniorangedev",
+        "documentationUrl": "https://github.com/miniOrangeDev/moldap/blob/master/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/miniOrangeDev/moldap/master/CHANGELOG.md",
+        "components": {
+            "moldapService": "miniorangedev\\moldap\\services\\MoldapService"
+        },
+        "class": "miniorangedev\\moldap\\Moldap"
+    }
+}

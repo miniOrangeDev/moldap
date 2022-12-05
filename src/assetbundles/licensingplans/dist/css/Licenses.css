@@ -1,0 +1,179 @@
+* {
+    box-sizing: border-box;
+}
+
+.success-message {
+    display: flex;
+    background-color: #03c403;
+    color: #ffffff;
+    position: fixed;
+    justify-content: center;
+    font-weight: bold;
+    padding: 20px;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    width: 98%;
+}
+
+.error-message {
+    display: flex;
+    background-color: #c40000;
+    color: #ffffff;
+    position: fixed;
+    justify-content: center;
+    font-weight: bold;
+    padding: 20px;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    width: 98%;
+}
+
+.columns {
+    margin: auto;
+    width: 33.3%;
+    padding: 8px;
+}
+
+.price {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    /*border: solid 1px #888888;*/
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    border-radius: 5px;
+}
+
+.price:hover {
+    box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2)
+}
+
+.price .header {
+    padding: 10px 0px 10px 20px;
+    background-color: #111;
+    color: white;
+    font-size: 25px;
+    font-weight: bolder;
+}
+
+.price .headerfree {
+    padding: 10px 0px 10px 20px;
+    background-color: #ffffff;
+    color: black;
+    font-size: 25px;
+    font-weight: bolder;
+}
+
+.price .subtitle {
+    padding: 0px 0px 0px 20px;
+    background-color: #111;
+    color: white;
+    font-size: 12px;
+}
+
+.price .subtitlefree {
+    padding: 0px 0px 0px 20px;
+    background-color: #ffffff;
+    color: black;
+    font-size: 12px;
+}
+
+
+.price li {
+    padding: 5px;
+}
+
+.price .licenseplan {
+    padding: 20px 20px 20px 20px;
+    background-color: #111;
+    font-size: 20px;
+    color: white;
+}
+
+.price .licenseplanfree {
+    padding: 20px 20px 20px 20px;
+    background-color: #ffffff;
+    font-size: 20px;
+    color: black;
+}
+
+.price .features {
+    padding: 10px 0px 10px 20px;
+    background-color: #111;
+    font-size: 14px;
+    color: white;
+}
+
+.price .featuresfree {
+    padding: 10px 0px 10px 20px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: black;
+}
+
+.price .buypremium {
+    text-align: center;
+    background-color: #111;
+    font-size: 20px;
+    padding: 15px;
+}
+
+.price .buyfree {
+    text-align: center;
+    background-color: #ffffff;
+    font-size: 20px;
+    padding: 15px;
+}
+
+.button {
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 7px;
+}
+
+.button:hover {
+    background-color: #008a57;
+}
+
+.mo_ldap_modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 100px;
+    top: 0;
+    margin-left:220px;
+    width: 50%;
+    height: 100%;
+
+}
+
+.mo_ldap_modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 55%;
+    z-index: 1000000;
+    position: fixed;
+}
+
+.moldap-modal-contatiner-contact-us{
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%!important;
+    background-color: #121212cc!important;
+    opacity: .9!important;
+    height: 100%!important;
+    z-index: 10;
+}

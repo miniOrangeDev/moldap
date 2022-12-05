@@ -1,0 +1,54 @@
+{% set title = "Contact Us"|t('moldap') %}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("miniorangedev\\moldap\\assetbundles\\moldap\\MoldapAsset") %}
+{% do view.registerAssetBundle("miniorangedev\\moldap\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{% set title = "miniOrange LDAP/Active Directory Integration"|t('moldap') %}
+
+{% set selectedSubnavItem = 'contactUs' %}
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@miniorangedev/moldap/assetbundles/indexcpsection/dist', true) ~ '/img/mo-icon.svg' %}
+
+{% set successMessage = craft.app.session.getFlash('success', null, true) %}
+
+{% set errorMessage = craft.app.session.getFlash('error', null, true) %}
+
+{% set content %}
+    {% if successMessage %}
+        <div class="success-message" id="popUpModal">
+            {{ successMessage }}
+        </div>
+    {% endif %}
+
+    {% if errorMessage %}
+        <div class="error-message" id="popUpModal">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    <div class="head-div">
+        <h2> {{ "Contact Us"|t('moldap') }}</h2>
+
+        <form method="post" action="" accept-charset="UTF-8">
+            {{ csrfInput() }}
+            {{ actionInput('moldap/contactus/send-query') }}
+            {{ redirectInput('moldap') }}
+
+            <h3>Email <span style="color: red">*</span></h3>
+            <input type="email" id="email" class="text fullwidth" name="email" autocomplete="off" dir="ltr" style="width: 60%;" placeholder="Enter your email address" required>
+
+            <h3>Contact Number</h3>
+            <input type="tel" id="contact" class="text fullwidth" name="contact" autocomplete="off" dir="ltr" style="width: 60%;" placeholder="Enter your contact number">
+
+            <h3>Query <span style="color: red">*</span></h3>
+            <textarea type="text" id="query" class="text fullwidth" name="query" autocomplete="off" dir="ltr" rows="5" style="width: 60%;" placeholder="Enter your Query" required></textarea>
+
+            <br><br>
+            <button class="button" type="submit">Submit</button>
+        </form>
+    </div>
+
+{% endset %}

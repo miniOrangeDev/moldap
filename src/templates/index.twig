@@ -1,0 +1,218 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * moldap plugin for Craft CMS 3.x
+ *
+ * moldap index.twig
+ *
+ * @author    miniorange
+ * @copyright Copyright (c) 2022 miniorange
+ * @link      miniorange.com
+ * @package   Moldap
+ * @since     1.0.0
+ */
+#}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("miniorangedev\\moldap\\assetbundles\\moldap\\MoldapAsset") %}
+{% do view.registerAssetBundle("miniorangedev\\moldap\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{# Link for the ? icon at the bottom of the page #}
+{% set docsUrl = "???" %}
+
+{#{% set fullPageForm = true %}#}
+
+{# The title of this CP section #}
+{% set title = "miniOrange LDAP/Active Directory Integration" %}
+
+{# The URL to this plugin's base CP section #}
+{% set pluginCpUrl = url('moldap') %}
+
+{# Get a URL to an image in our AssetBundle #}
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@miniorangedev/moldap/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}
+
+{# Content that should appear in the page header#}
+{% set extraPageHeaderHtml %}
+    <div class="buttons">
+        <a href="{{ pluginCpUrl }}" class="btn submit add icon">{{ "Click Me!"|t('moldap') }}</a>
+    </div>
+{% endset %}
+
+{% set moldapconfig = craft.moldap.getLDAPData %}
+
+{% set protocol = moldapconfig['ldapProtocol'] %}
+
+{% set port = moldapconfig['ldapPort'] %}
+
+{% if port == "" and protocol == "ldaps" %}
+    {% set port = "636" %}
+{% elseif port == "" %}
+    {% set port = "389" %}
+{% endif %}
+
+
+{% set successMessage = craft.app.session.getFlash('success', null, true) %}
+{% set errorMessage = craft.app.session.getFlash('error', null, true) %}
+
+{# The content of the CP Section#}
+{% set content %}
+    {% if successMessage %}
+        <div class="success-message" id="popUpModal">
+            {{ successMessage }}
+        </div>
+    {% endif %}
+
+    {% if errorMessage %}
+        <div class="error-message" id="popUpModal">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    <div class="head-div">
+        <h2>{{ "LDAP Configuration"|t('moldap') }}</h2>
+
+        <form method="post" action="" accept-charset="UTF-8">
+
+            {{ csrfInput() }}
+            {{ actionInput('moldap') }}
+            {{ redirectInput('moldap') }}
+
+            <div>
+                <div style="padding-top: 20px">
+                    <div><h3>LDAP Server <span style="color: red">*</span></h3></div>
+                </div>
+                <div style="display: flex; padding-top: 10px">
+                    <div style="width: 12%;margin: 0 10px 0px 0px;padding-right: 15px;">
+                        <select id="ldapProtocol" name="ldapProtocol" class="text fullwidth" dir="ltr" style="width: 125%;">
+                            {% if protocol == "ldaps" %}
+                                <option value = "ldap" >ldap</option>
+                                <option value = "ldaps" selected>ldaps</option>
+                            {% else %}
+                                <option value = "ldap" selected>ldap</option>
+                                <option value = "ldaps" >ldaps</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div style="width: 40%; padding-right: 10px;">
+                        <input type="text" id="ldapUrl" class="text fullwidth" name="ldapUrl" autocomplete="off" dir="ltr" style="" placeholder="LDAP Server Hostname or IP Address" value="{{ moldapconfig['ldapUrl'] }}" required>
+                    </div>
+                    <div style="width: 10%; padding-right: 10px">
+                        <input type="text" id="ldapPort" class="text fullwidth" name="ldapPort" autocomplete="off" dir="ltr" style="" value="{{ port }}" placeholder="Port" >
+                    </div>
+                </div>
+
+                <div>
+                    <div class="note"><span><em>Select ldap or ldaps from the above dropdown list. Specify the host name for the LDAP server in the above text field. Edit the port number if you have custom port number.</em></span></div>
+                </div>
+
+
+                <div style="padding-top: 20px">
+                    <div>
+                        <h3>Username <span style="color: red">*</span></h3>
+                    </div>
+                </div>
+                <div style="padding-top: 10px">
+                    <div>
+                        <input type="text" id="userDN" class="text fullwidth" name="userDN" autocomplete="off" dir="ltr" style="" placeholder="Enter Username" value="{{ moldapconfig['userDN'] }}" required>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="note"><span><em>You can specify the Username of the LDAP server in the either way as follows <strong>Username@domainname or Distinguished Name(DN)</strong> format</em></span></div>
+                </div>
+
+
+                <div style="padding-top: 20px">
+                    <div>
+                        <h3>Password <span style="color: red">*</span></h3>
+                    </div>
+                </div>
+                <div style="padding-top: 10px">
+                    <div>
+                        <input type="password" id="password" class="text fullwidth" name="password" autocomplete="off" dir="ltr" style="" placeholder="Enter Password" value="{{ moldapconfig['password'] }}" required>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="note"><span><em>The above username and password will be used to establish the connection to your LDAP server.</em></span></div>
+                </div>
+
+
+                <div style="padding-top: 20px">
+                    <div>
+                        <h3>Search Base <span style="color: red">*</span></h3>
+                    </div>
+                </div>
+                <div style="padding-top: 10px">
+                    <div>
+                        <input type="text" id="searchBase" class="text fullwidth" name="searchBase" autocomplete="off" dir="ltr" style="" placeholder="dc=domain,dc=com" value="{{ moldapconfig['searchBase'] }}" required>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="note"><span><em>This is the LDAP Tree under which we will search for the users for authentication. If we are not able to find a user in LDAP it means they are not present in this search base or any of its sub trees. They may be present in some other.Provide the distinguished name of the Search Base object. <strong>eg. cn=Users,dc=domain,dc=com.</strong> You can also use multiple search bases for authentication.<br><em style="color: green;">Multiple Search Bases are supported in the <a href="{{ craft.app.request.absoluteUrl }}/licensing">Premium Version</a> of the plugin.</em></span></div>
+                </div>
+
+
+                <div style=" display:flex; padding-top: 20px;">
+                    <div>
+                        <h3>Username Attribute <span style="color: red">*</span></h3>
+                    </div>
+                    <div style="padding-left: 30%;">
+                        <h3>Email Attribute <span style="color: red">*</span></h3>
+                    </div>
+                </div>
+                <div style="display: flex; padding-top: 10px;">
+                    <div>
+                        <input type="text" id="searchFilter" class="text fullwidth" name="searchFilter" autocomplete="off" dir="ltr" style="width: 165%;" placeholder="sAMAcountName" value="{{ moldapconfig['searchFilter'] }}" required>
+                    </div>
+                    <div style="padding-left: 25%;">
+                        <input type="text" id="emailAttr" class="text fullwidth" name="emailAttr" autocomplete="off" dir="ltr" style="width: 165%;" placeholder="mail" value="{{ moldapconfig['emailAttr'] }}" required>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="note"><span><p>These fields are important for two reasons.<br>1.<strong> Both these fields are mandatory to register a user in Craft CMS.</strong><br>2. While searching for users, these are the attributes that are going to be matched to see if the user exists.<br>You can even allow logging in with multiple username attributes, separated with ' ; ' .<br><em style="color: green">Logging in with multiple username attributes are supported in the <a href="{{ craft.app.request.absoluteUrl }}/licensing">Premium Version</a> of the plugin.</em></em></span></div>
+                </div>
+
+            </div>
+
+            <button style="margin-top: 20px;" class="button" type="submit">Test and Save Connection</button>
+        </form>
+
+        <br><br>
+
+        <h2>{{ "Test Authentication"|t('moldap') }}</h2>
+
+        <form method="post" action="" accept-charset="UTF-8">
+            {{ csrfInput() }}
+            {{ actionInput('moldap/default/test-authentication') }}
+            {{ redirectInput('moldap') }}
+
+            <div>
+                <div style="padding-top: 20px">
+                    <div><h3>Username <span style="color: red">*</span></h3></div>
+                </div>
+                <div style="padding-top: 10px">
+                    <div>
+                        <input type="text" id="testUsername" class="text fullwidth" name="testUsername" autocomplete="off" dir="ltr" style="" placeholder="Enter your LDAP Username" required>
+                    </div>
+                </div>
+
+                <div style="padding-top: 20px">
+                    <div><h3>Password <span style="color: red">*</span></h3></div>
+                </div>
+                <div style="padding-top: 10px">
+                    <div>
+                        <input type="password" id="testPassword" class="text fullwidth" name="testPassword" autocomplete="off" dir="ltr" style="" placeholder="Enter your LDAP Password" required>
+                    </div>
+                </div>
+
+            </div>
+
+            <button style="margin-top: 20px;" class="button" type="submit">Test Authentication</button>
+        </form>
+    </div>
+{% endset %}

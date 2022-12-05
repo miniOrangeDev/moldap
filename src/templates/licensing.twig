@@ -1,0 +1,106 @@
+{% set title = "Contact Us"|t('moldap') %}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("miniorangedev\\moldap\\assetbundles\\moldap\\MoldapAsset") %}
+{% do view.registerAssetBundle("miniorangedev\\moldap\\assetbundles\\licensingplans\\LicensingPlansAsset") %}
+
+{% set title = "miniOrange LDAP/Active Directory Integration"|t('moldap') %}
+
+{% set selectedSubnavItem = 'licensing' %}
+
+{% set successMessage = craft.app.session.getFlash('success', null, true) %}
+
+{% set errorMessage = craft.app.session.getFlash('error', null, true) %}
+
+{% set content %}
+    {% if successMessage %}
+        <div class="success-message" id="popUpModal">
+            {{ successMessage }}
+        </div>
+    {% endif %}
+
+    {% if errorMessage %}
+        <div class="error-message" id="popUpModal">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    <div style="display: flex;">
+        <div class="columns">
+            <ul class="price">
+                <li class="headerfree">Free Plan</li>
+                <li class="subtitlefree">Try plugin for free</li>
+                <li class="licenseplanfree">$0 / year</li>
+                <li class="featuresfree">&bull; Authentication from LDAP Server/ Active Directory</li>
+                <li class="featuresfree">&bull; Custom Username Attribute</li>
+                <li class="featuresfree">&bull; Custom Mail Attribute</li>
+                <li class="featuresfree">&bull; Authenticate both LDAP users and local Craft users</li>
+                <li class="featuresfree"> </li>
+                <li class="featuresfree">&nbsp;</li>
+                <li class="buyfree"><button class="button">Active Plan</button></li>
+            </ul>
+        </div>
+
+        <div class="columns">
+            <ul class="price">
+                <li class="header">Premium Plan</li>
+                <li class="subtitle">Exclusive Features</li>
+                <li class="licenseplan">$249 / year</li>
+                <li class="features">&bull; All Features from Free Plan</li>
+                <li class="features">&bull; Attribute Mapping</li>
+                <li class="features">&bull; Multiple Search Bases</li>
+                <li class="features">&bull; Multiple Username Attributes</li>
+                <li class="features">&bull; Restrict/Allow local Craft users to Login</li>
+                <li class="features"> </li>
+                <li class="buypremium"><button id="requestQuote" class="button" type="submit">Request a Pricing Quote</button></li>
+
+            </ul>
+        </div>
+
+    </div>
+    <div hidden id="contactSales" class="mo_ldap_modal" style="margin-left: 26%;z-index:11;">
+        <div class="moldap-modal-contatiner-contact-us" style="color:black;"></div>
+        <div class="mo_ldap_modal-content" id="contactUsPopUp" style="width: 700px; padding:30px;"> <span id="contact_us_title" style="font-size: 22px; margin-left: 50px; font-weight: bold;">Request for a Quotation from our Sales Team</span>
+            <div style="width: 100%;display: inline-block;text-align: center;">
+                <form method="post" action="" accept-charset="UTF-8">
+                    {{ csrfInput() }}
+                    {{ actionInput('moldap/contactus/send-query') }}
+                    {{ redirectInput('moldap') }}
+
+                    <table>
+                        <tr><td><br></td></tr>
+                        <tr>
+                            <td><h3>Email <span style="color: red">*</span></h3></td>
+                            <td><input type="email" id="email" class="text fullwidth" name="email" autocomplete="off" dir="ltr" style="width: 200%;" placeholder="Enter your email address" required></td>
+                        </tr>
+                        <tr>
+                            <td><h3>Contact Number</h3></td>
+                            <td><input type="tel" id="contact" class="text fullwidth" name="contact" autocomplete="off" dir="ltr" style="width: 200%;" placeholder="Enter your contact number"></td>
+                        </tr>
+                        <tr>
+                            <td><h3>Query <span style="color: red">*</span></h3></td>
+                            <td><textarea type="text" id="query" class="text fullwidth" name="query" autocomplete="off" dir="ltr" rows="5" style="width: 200%;" placeholder="Enter your Query" required>Please share the quote along with the payment steps.</textarea></td>
+                        </tr>
+{#                            <td><button class="button" type="submit">Submit</button></td>#}
+{#                            <td><button class="button" id="miniorange_ldap_licensing_contact_us_close">Close</button></td>#}
+                    </table>
+{#                    <h3>Email <span style="color: red">*</span></h3>#}
+{#                    <input type="email" id="email" class="text fullwidth" name="email" autocomplete="off" dir="ltr" style="width: 30%;" placeholder="Enter your email address" required>#}
+
+{#                    <h3>Contact Number</h3>#}
+{#                    <input type="tel" id="contact" class="text fullwidth" name="contact" autocomplete="off" dir="ltr" style="width: 30%;" placeholder="Enter your contact number">#}
+
+{#                    <h3>Query <span style="color: red">*</span></h3>#}
+{#                    <textarea type="text" id="query" class="text fullwidth" name="query" autocomplete="off" dir="ltr" rows="5" style="width: 30%;" placeholder="Enter your Query" required></textarea>#}
+
+                    <br><br>
+                    <button class="button" style="margin-right: 1rem" type="submit">Submit</button>
+                    <button class="button" id="miniorange_ldap_licensing_contact_us_close">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endset %}
