@@ -81,7 +81,7 @@ class LoginController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'ldaplogin'];
+    protected array|int|bool $allowAnonymous = ['index', 'ldaplogin'];
 
     const EVENT_LOGIN_FAILURE = 'loginFailure';
 
@@ -90,7 +90,7 @@ class LoginController extends Controller
 
     }
 
-    public function actionLdaplogin() {
+    public function actionLdaplogin(): ?Response {
         $userSession = Craft::$app->getUser();
         $request = Craft::$app->getRequest();
         $user_name = $request->getRequiredBodyParam('loginName');
@@ -117,12 +117,12 @@ class LoginController extends Controller
                 // check if user already exists, create user if not exist
                 $user_info = User::find()->email($email)->all();
                 if(isset($user_info[0]["admin"]) && $user_info[0]["admin"] == 1) {
-                    exit('No Email Address Return!');
+                    exit('No Such Email Address Found');
                 }
 
                 if(empty($user_info)) {
                     if(Craft::$app->getUser()->getIdentity()) {
-                        return;
+                        return null;
                     }
                     $user->username = $user_name;
                     $user->email = $email;
@@ -164,54 +164,71 @@ class LoginController extends Controller
         return $this->_handleSuccessfulLogin();
     }
 
-    private function _handleLoginFailure(string $authError = null, User $user = null) {
+    /**
+     * Handles a failed login attempt.
+     *
+     * @param string|null $authError
+     * @param User|null $user
+     * @return Response|null
+     * @throws ServiceUnavailableHttpException
+     */
+    private function _handleLoginFailure(?string $authError, ?User $user = null): ?Response
+    {
+        // Delay randomly between 0 and 1.5 seconds.
         usleep(random_int(0, 1500000));
+
         $message = UserHelper::getLoginFailureMessage($authError, $user);
 
+        // Fire a 'loginFailure' event
         $event = new LoginFailureEvent([
-           'authError' => $authError,
+            'authError' => $authError,
             'message' => $message,
             'user' => $user,
         ]);
         $this->trigger(self::EVENT_LOGIN_FAILURE, $event);
 
-        if($this->request->getAcceptsJson()) {
-            return $this->asJson([
+        return $this->asFailure(
+            $event->message,
+            data: [
                 'errorCode' => $authError,
-                'error' => $event->message,
-            ]);
-        }
-
-        $this->setFailFlash($event->message);
-
-        Craft::$app->getUrlManager()->setRouteParams([
-            'loginName' => $this->request->getBodyParam('loginName'),
-            'rememberMe' => (bool)$this->request->getBodyParam('rememberMe'),
-            'errorCode' => $authError,
-            'errorMessage' => $event->message,
-        ]);
-
-        return null;
-
+            ],
+            routeParams: [
+                'loginName' => $this->request->getBodyParam('loginName'),
+                'rememberMe' => (bool)$this->request->getBodyParam('rememberMe'),
+                'errorCode' => $authError,
+                'errorMessage' => $event->message,
+            ]
+        );
     }
 
-    private function _handleSuccessfulLogin(): Response {
+    /**
+     * Redirects the user after a successful login attempt, or if they visited the Login page while they were already
+     * logged in.
+     *
+     * @return Response
+     */
+    private function _handleSuccessfulLogin(): Response
+    {
+        // Get the return URL
         $userSession = Craft::$app->getUser();
         $returnUrl = $userSession->getReturnUrl();
 
+        // Clear it out
         $userSession->removeReturnUrl();
 
+        // If this was an Ajax request, just return success:true
         if ($this->request->getAcceptsJson()) {
             $return = [
-                'success' => true,
                 'returnUrl' => $returnUrl,
             ];
 
             if (Craft::$app->getConfig()->getGeneral()->enableCsrfProtection) {
                 $return['csrfTokenValue'] = $this->request->getCsrfToken();
             }
-            return $this->asJson($return);
+
+            return $this->asSuccess(data: $return);
         }
+
         return $this->redirectToPostedUrl($userSession->getIdentity(), $returnUrl);
     }
 
