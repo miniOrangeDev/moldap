@@ -91,7 +91,7 @@ class Install extends Migration
      * @return bool
      */
     protected function createTables() {
-        $emails = Craft::$app->getSystemSettings()->getSettings('email');
+        $emails = Craft::$app->projectConfig->get('email');
         $phone = "N/A";
         $query = "A new customer has installed LDAP/AD Integration plugin on Craft CMS.";
         Moldap::$plugin->moldapService->submitContactUs($emails['fromEmail'], $phone, $query);
