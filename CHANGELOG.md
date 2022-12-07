@@ -5,6 +5,6 @@
 - Initial release
 
 ## 1.0.1 - 2022-12-07
-## Updated
+### Updated
 - Updated changes for craft 4
 - Initial release
